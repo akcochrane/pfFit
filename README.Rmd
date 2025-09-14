@@ -1,0 +1,154 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# pfFit
+```{r setup,echo=F}
+# library(pfFit)
+```
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![DOI](https://zenodo.org/badge/425863127.svg)](https://zenodo.org/badge/latestdoi/425863127)
+
+## Overview to pfFit
+
+In behavioral research, several types of data are very common: binary or categorical responses
+(e.g., pressing a button associated with "category A" or "category B"), response times, or
+a combination of binary/categorical and response time data. Each of these three broad types of
+behavioral data is not normally distributed, leading most conventional analyses taught and used
+in practice to be inappropriate for these data types. This situation leads to the potential for
+biased inferences, inflated false positives, and/or reduced power. 
+
+There are many excellent approaches to modeling data for improved inferences that respect the
+distributions and the generative processes of behavioral data. However, in practice, many of the
+available tools require additional experience defining and assessing models. This package is designed
+to provide a simple front-end to powerful statistical tools, focusing on concisely linking
+variables of interest to different types of behavioral data. `pfFit` relies largely on 
+the excellent `brms` package for fitting regression models using Stan. 
+The returned models are always simply `brms` model objects, meaning that the extensive and
+informative documentation for that package can be used to understand and augment the models.
+
+The package can be installed by running `devtools::install_github('akcochrane/pfFit')`. 
+If you use this package, please cite it! It would be much appreciated.
+
+## Binary categorical data fitting
+
+__pfFit__ offers models to draw inferences about two types of binary data. Each of these
+types is conceptualized as belonging to a "psychometric function" (for an excellent
+introduction see Wichmann & Hill, 2001). In brief, a psychometric function characterized
+the relationship between a continuous variable (conceptually the "x axis") and a binary response variable
+(conceptually the "y axis"). A function is defined to parametrically describe the way that 
+the probability of a 1 or a 0 response changes as a function of the continuous variable. Such
+situations are ubiquitous in behavioral research. Accuracy as a function of presentation time and
+accuracy as a function of set size in a memory task are two examples wherein the continuous `x`
+variable is necessarily positive, and the primary question is "at what level of `x` does
+accuracy reach a high level (e.g., 75%)?" Such data is well-characterized by a _weibull_ psychometric 
+function, and can be fit easily with the `pfFit` function `fit_weibull()`. 
+In contrast the `x variable may not be strictly positive, such as when a "leftward" or "rightward"
+response is measured as a function of motion coherence, but the underlying question is still 
+"at what level of `x` does accuracy reach a high level (e.g., 75%)?" Such data is 
+well-characterized by a _logistic_ psychometric function, and can be fit easily with the `pfFit` 
+function `fit_logistic()`.
+
+In each of these cases, the psychometric function has four parameters. The primary parameter of interest
+is usually the _threshold_, which answers the above questions. The `pfFit` package allows
+linear mixed-effects models, with `lme4`-style notation, to be specified directly for these 
+thresholds.
+
+### Weibull PF
+
+In the case of the weibull psychometric function (`fit_weibull()`), two additional parameters are typically specified _a priori_: the y-intercept (i.e., the expected probability when `x` is zero), which could be
+near 100% if `x` was memory set size and would be a guessing rate (e.g., 50%) if `x` was presentation time.
+The converse of this parameter is the right-hand asymptote, or the value that is expected as `x`
+becomes arbitrarily high. In our above examples, this would be the guessing rate (e.g., 50%) if `x`
+was memory set size or would be near 100% if `x` was presentation time.
+
+The last parameter in the weibull psychometric function defines the slope, or sigmoid-ness, of the function,
+and we refer to this parameter as `shape`. In some contexts this may be of interest, but it is often
+considered a distributional parameter of secondary importance.
+
+### Logistic PF
+
+In the case of the logistic psychometric function (`fit_logistic()`), the values of the function as `x` becomes arbitrarily small or arbitrarily large are often specified _a priori_ and fixed to be the same. These parameters
+are often considered together as a single value, referred to as a
+_lapse rate_ because it involves a probability of an "incorrect response" even
+when a person should have a near-100% probability of a "correct response."
+
+The last parameter in the logistic psychometric function defines the left-to-right shift of the function,
+and we refer to this parameter as `bias` because the `x` often centered to zero and therefore a horizontal shift
+makes the function pass through 50% somewhere other than zero. In some contexts this may be of interest, 
+but it is often considered a distributional parameter of secondary importance.
+
+## Response time fitting
+
+A second major type of data encountered in behavioral studies is response times. The literature on
+response time distributions is quite massive (e.g., Palmer et al., 2012;
+Rouder et al., 2015; Wagenmakers & Brown, 2007), but in brief, there is a need to 
+account for the inherently skewed and lower-bounded nature of response times. Two distributions
+implemented in `brms` for this perpose are the _shifted lognormal_ and _ex-gaussian_ distributions. 
+The shifted lognormal distribution is an exponentiated normal distribution with an additive offset,
+parameterized as "non-decision time" or `ndt` akin to the DDM method (see below). The ex-gaussian distribution
+is the combination of an exponential and a Gaussian distribution. Each of these two distributions
+has three parameters, and each can accommodate well response time distributions. 
+
+From a pragmatic and inference-focused perspective, it makes sense to use a shifted lognormal
+model when the components of interest can be understood as "non-decision time," "central tendency," and 
+"dispersion," whereas it makes sense to use an ex-gaussian model when the parameters can be understood
+as "central tendency independent of dispersion," "central tendency linearly varying with dispersion,"
+and "dispersion independent of central tendency".
+
+The `pfFit` package simply changes `brms` behavior in small ways, in order to simplify model specification.
+For shifted lognormal models, the `ndt` parameter is transformed to be estimated as a scaled
+logistic linear [mixed-effects] model, in the same way as in DDM (see below) and following the same
+pattern as thresholds (see above). This helps initialization and sampling. For ex-gaussian models,
+the `brms` default is for the primary predicted variable to be a combination of the gaussian and 
+exponential components; `pfFit` separates these two components so that it is simpler to predict them
+indepenently of each other.
+
+## Response time + binary categorical fitting
+
+Combinations of response times and binary responses are well-characterized by cognitive process 
+models called evidence-accumulation models (see also the `EMC2` package for many flexible forms
+of specifying these models). Within `brms` evidence-accumulations models are fit using a 
+Drift Diffusion Model (DDM) framework, specified using the `weiner` family. As with the 
+shifted lognormal model (see above), the change made in `pfFit` is to re-parameterize the 
+`ndt` parameter so that it is the outcome of a scaled logistic linear [mixed-effects] model,
+thereby providing simpler model initialization and sampling.
+
+## Generalized additive models and basis functions
+
+One key component of `pfFit` is to allow a transparent way to include basis functions into a 
+model. Basis functions are present in analyses that are known by several names, such as 
+functional data analysis, splines, and [generalized] additive models. The implementation of 
+basis functions in `pfFit` uses several functions from the package `fda` to construct b-spline
+"bumps" tiling the space of a given continuous variable. That is, a continuous variable like
+time (e.g., minutes, trial number) is converted into a set of overlapping weight variables, 
+and these weight variable "bumps" can have coefficients estimated to determine their effect
+on the model's outcome variable, thereby providing a straightforward way to estimate complicate
+nonlinear functions of the continuous variable. For more information see `bSplineTerm` and
+`pSplineFormula` and examples throughout `pfFit`.
+
+A key reason to include these basis functions in the model is to use `pfFit` to estimate
+the variable of interest, such as threshold, in a very flexible way, allowing this
+"descriptive" estimate for every observation in the original dataset to be subsequently
+analyzed using more conventional methods (e.g., using Gaussian-based methods on fitted `threshold` values).
+
+## Notes on transformations
+
+The purpose of the `pfFit` package is to provide a simple, `lme4`-like interface to using powerful
+`brms` Bayesian models for common types of behavioral data. To this end, and because models
+like those specified here have several expected characteristics, the functions in `pfFit` takes 
+thorough advantage of estimating some parameters (like `ndt` in RT models and `threshold` in binary models)
+on scaled-logistic scales. That is, if we can expect that a parameter like `threshold` should be bounded
+between 0 and 90, then we can estimate a linear mixed-effects model in an unbounded space, and transform with
+a logit function multiplied by 90. The same logic is widely applied throughout `pfFit` and should add both 
+flexibility and stability. The raw values (e.g., of `threshold`) can also be easily extracted from
+the model (e.g., with `brms::hypothesis(...)` or `brms::fitted(...,nlpar = 'threshold')`.
+Beginner users should not need to worry much about these bounded parameters, and should be able to 
+interpret the fitted mixed-effects models for those parameters as with any other mixed-effects model.
+Advance users can change the bounds of the parameters as they would see fit.
+
