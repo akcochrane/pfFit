@@ -4,9 +4,7 @@
 
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![DOI](https://zenodo.org/badge/425863127.svg)](https://zenodo.org/badge/latestdoi/425863127)
-
-## Overview to pfFit
+\#\# Overview to pfFit
 
 In behavioral research, several types of data are very common: binary or
 categorical responses (e.g., pressing a button associated with “category
