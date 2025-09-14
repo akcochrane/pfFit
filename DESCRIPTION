@@ -1,21 +1,20 @@
 Package: pfFit
 Type: Package
 Title: pfFit, a package for fitting psychometric functions
-Version: 23.03.15
+Version: 25.09.13
 Author: Aaron Cochrane
 Maintainer: Aaron Cochrane <aaron_cochrane@brown.edu>
 Description: 
 License: MIT
 Encoding: UTF-8
 LazyData: true
-Imports: graphics, MASS, stats
+Imports: graphics, MASS, stats, brms
 Suggests: 
     knitr,
     rmarkdown,
     psych,
-    lme4,
+    fda,
     testthat,
-    RWiener,
-    brms
+    RWiener
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3
