@@ -12,6 +12,7 @@ output:
 ```
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Overview to pfFit
 
 In behavioral research, several types of data are very common: binary or categorical responses
@@ -46,7 +47,7 @@ accuracy as a function of set size in a memory task are two examples wherein the
 variable is necessarily positive, and the primary question is "at what level of `x` does
 accuracy reach a high level (e.g., 75%)?" Such data is well-characterized by a _weibull_ psychometric 
 function, and can be fit easily with the `pfFit` function `fit_weibull()`. 
-In contrast the `x variable may not be strictly positive, such as when a "leftward" or "rightward"
+In contrast the `x` variable may not be strictly positive, such as when a "leftward" or "rightward"
 response is measured as a function of motion coherence, but the underlying question is still 
 "at what level of `x` does accuracy reach a high level (e.g., 75%)?" Such data is 
 well-characterized by a _logistic_ psychometric function, and can be fit easily with the `pfFit` 
@@ -59,7 +60,8 @@ thresholds.
 
 ### Weibull PF
 
-In the case of the weibull psychometric function (`fit_weibull()`), two additional parameters are typically specified _a priori_: the y-intercept (i.e., the expected probability when `x` is zero), which could be
+In the case of the weibull psychometric function (`fit_weibull()`), two additional parameters are typically 
+specified _a priori_: the y-intercept (i.e., the expected probability when `x` is zero), which could be
 near 100% if `x` was memory set size and would be a guessing rate (e.g., 50%) if `x` was presentation time.
 The converse of this parameter is the right-hand asymptote, or the value that is expected as `x`
 becomes arbitrarily high. In our above examples, this would be the guessing rate (e.g., 50%) if `x`
@@ -71,7 +73,8 @@ considered a distributional parameter of secondary importance.
 
 ### Logistic PF
 
-In the case of the logistic psychometric function (`fit_logistic()`), the values of the function as `x` becomes arbitrarily small or arbitrarily large are often specified _a priori_ and fixed to be the same. These parameters
+In the case of the logistic psychometric function (`fit_logistic()`), the values of the function as `x` 
+becomes arbitrarily small or arbitrarily large are often specified _a priori_ and fixed to be the same. These parameters
 are often considered together as a single value, referred to as a
 _lapse rate_ because it involves a probability of an "incorrect response" even
 when a person should have a near-100% probability of a "correct response."

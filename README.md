@@ -4,7 +4,8 @@
 
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-\#\# Overview to pfFit
+
+## Overview to pfFit
 
 In behavioral research, several types of data are very common: binary or
 categorical responses (e.g., pressing a button associated with “category
@@ -47,8 +48,13 @@ task are two examples wherein the continuous `x` variable is necessarily
 positive, and the primary question is “at what level of `x` does
 accuracy reach a high level (e.g., 75%)?” Such data is
 well-characterized by a *weibull* psychometric function, and can be fit
-easily with the `pfFit` function `fit_weibull()`. In contrast the
-`x variable may not be strictly positive, such as when a "leftward" or "rightward" response is measured as a function of motion coherence, but the underlying question is still  "at what level of`x`does accuracy reach a high level (e.g., 75%)?" Such data is  well-characterized by a _logistic_ psychometric function, and can be fit easily with the`pfFit`function`fit_logistic()\`.
+easily with the `pfFit` function `fit_weibull()`. In contrast the `x`
+variable may not be strictly positive, such as when a “leftward” or
+“rightward” response is measured as a function of motion coherence, but
+the underlying question is still “at what level of `x` does accuracy
+reach a high level (e.g., 75%)?” Such data is well-characterized by a
+*logistic* psychometric function, and can be fit easily with the `pfFit`
+function `fit_logistic()`.
 
 In each of these cases, the psychometric function has four parameters.
 The primary parameter of interest is usually the *threshold*, which
