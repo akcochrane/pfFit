@@ -26,13 +26,24 @@
 #'     d <- TEfits::anstrain
 #'     d$absRat <- abs(d$ratio)
 #'     
-#'     threshSpline <- bSplineFormula(scaleLogisThreshold ~ trialNum
-#'                                    ,d$trialNum,groupingVar = 'subID')
+#'     d$spl <- bSplineMat(basisVar = d$trialNum)
 #'                                    
-#'     m_weibull <- fit_weibull(y='acc',x='absRat'
-#'                                    ,shapeForm = logShape ~ (1 | subID)
-#'                                    cores = 2
+#'     m_weibull_linearFixed <- fit_weibull(y='acc',x='absRat'
+#'                                    , thresholdForm = scaleLogisThreshold ~ scale(trialNum) + (spl || subID)
+#'                                    , shapeForm = logShape ~ (1 | subID)
+#'                                    , dat = d
+#'                                    , cores = 2 , chains = 2 # only run 2 chains for efficiency
 #'                                    )
+#'                                    
+#'     d$trialM <- monoVar(d$trialNum)
+#'     
+#'     m_weibull_monoFixed <- fit_weibull(y='acc',x='absRat'
+#'                                    , thresholdForm = scaleLogisThreshold ~ mo(trialM) + (spl || subID)
+#'                                    , shapeForm = logShape ~ (1 | subID)
+#'                                    , dat = d
+#'                                    , cores = 2 , chains = 2 # only run 2 chains for efficiency
+#'                                    )
+#'                                    
 #' 
 fit_weibull <- function(y
                         , x

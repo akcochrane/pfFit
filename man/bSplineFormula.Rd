@@ -9,9 +9,9 @@ bSplineFormula(
   basisVar,
   groupingVar = "",
   nbasis = 5,
-  nbasis_groupingVar = 0,
+  nbasis_groupingVar = -1,
   dropLargest = 2,
-  dropLargest_groupingVar = 0
+  dropLargest_groupingVar = -1
 )
 }
 \arguments{

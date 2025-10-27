@@ -43,13 +43,13 @@
 #' , alpha = 1 + sin(d$trialNum/20)/10
 #' , beta = .5)[,'q']
 #' 
-#' expoFormula <- bSplineFormula(expoMean ~ (0 + scale(absRat) | subID) , basisVar = d$trialNum, groupingVar = 'subID')
+#' d$spl <- bSplineMat(basisVar = d$trialNum)
 #' 
 #' m_EG <- fit_exGauss('rt'
-#' ,expoFormula = expoFormula
+#' ,expoFormula = expoMean ~ scale(trialNum) + (spl + scale(absRat) || subID)
 #' ,gaussFormula = gaussMean ~ scale(sizeRat) + (1 | subID)
 #' ,dat = d
-#' , cores = 2
+#' , cores = 2 , chains = 2 # only run 2 chains for efficiency
 #' )
 #' 
 fit_exGauss <- function(rtVar

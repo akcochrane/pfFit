@@ -47,13 +47,13 @@ bernoulli response distribution.
   d <- TEfits::anstrain
   d$absRat <- abs(d$ratio)
   
-  threshSpline <- bSplineFormula(scaleLogisThreshold ~ trialNum
-  ,d$trialNum,groupingVar = 'subID')
+  d$spl <- bSplineMat(basisVar = d$trialNum)
   
   m_logistic <- fit_logistic(y='resp',x='ratio'
-  ,thresholdForm = threshSpline
-  ,bias = bias ~ (1 | subID)
-  ,dat = d
+  , thresholdForm = scaleLogisThreshold ~ scale(trialNum) + (spl || subID)
+  , bias = bias ~ (1 | subID)
+  , dat = d
+  , cores = 2 , chains = 2 # only run 2 chains for efficiency
    )
 
 }

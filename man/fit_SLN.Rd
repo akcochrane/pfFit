@@ -45,12 +45,12 @@ d$rt <- brms::rwiener(nrow(d)
 , alpha = 1 + sin(d$trialNum/20)/10
 , beta = .5)[,'q']
 
-rtFormula <- bSplineFormula(rt ~ (0 + scale(absRat) | subID) , basisVar = d$trialNum, groupingVar = 'subID')
+d$spl <- bSplineMat(basisVar = d$trialNum)
 
-m_SLN <- fit_SLN(rtFormula = rtFormula
+m_SLN <- fit_SLN(rtFormula = rt ~ scale(trialNum) + (spl + scale(absRat) || subID)
 ,ndtFormula = scaleLogisNDT ~ (1 | subID)
 ,dat = d
-, cores = 2
+, cores = 2 , chains = 2 # only run 2 chains for efficiency
 )
 
 }

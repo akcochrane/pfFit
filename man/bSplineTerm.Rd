@@ -28,6 +28,6 @@ Define a b-spline term for a model formula
 }
 \examples{
 
-c()
+splineTerm <- bSplineTerm(basisVar = 1:200)
 
 }

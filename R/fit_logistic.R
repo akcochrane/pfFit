@@ -24,13 +24,13 @@
 #'   d <- TEfits::anstrain
 #'   d$absRat <- abs(d$ratio)
 #'   
-#'   threshSpline <- bSplineFormula(scaleLogisThreshold ~ trialNum
-#'   ,d$trialNum,groupingVar = 'subID')
+#'   d$spl <- bSplineMat(basisVar = d$trialNum)
 #'   
 #'   m_logistic <- fit_logistic(y='resp',x='ratio'
-#'   ,thresholdForm = threshSpline
-#'   ,bias = bias ~ (1 | subID)
-#'   ,dat = d
+#'   , thresholdForm = scaleLogisThreshold ~ scale(trialNum) + (spl || subID)
+#'   , bias = bias ~ (1 | subID)
+#'   , dat = d
+#'   , cores = 2 , chains = 2 # only run 2 chains for efficiency
 #'    )
 #' 
 fit_logistic <- function(y
@@ -43,12 +43,20 @@ fit_logistic <- function(y
                          , ...){
   require(brms)
   
-  if(!is.null(attr(thresholdForm,'basisDF'))){
+  if(!is.null(attr(thresholdForm,'basisDF'))){ # this if if the formula was made using `bSplineTerm()`
     dat <- data.frame(dat,attr(thresholdForm,'basisDF'))
   }
   
-  if(length(range_x)==1){
+  if(length(range_x)==1){ # calculate a default threshold range
     range_x <- signif(range(abs(d[,x]),na.rm = T),2)
+  }
+  
+  ## if formulas were specified without a left hand side
+  if(length(as.character(thresholdForm)) == 2){
+    thresholdForm <- paste('scaleLogisThreshold ~',as.character(thresholdForm)[2])
+  }
+  if(length(as.character(biasForm)) == 2){
+    biasForm <- paste('bias ~',as.character(biasForm)[2])
   }
   
   threshForm_scale <- formula(paste0('threshold ~ ',range_x[1],' + (',range_x[2],'-',range_x[1],')*inv_logit(scaleLogisThreshold)'))

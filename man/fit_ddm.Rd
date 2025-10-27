@@ -56,13 +56,13 @@ d$rt <- brms::rwiener(nrow(d)
 , alpha = 1 + sin(d$trialNum/20)/10
 , beta = .5)[,'q']
 
-drFormula <- bSplineFormula(rt | dec(acc) ~ (0 + scale(absRat) | subID) , basisVar = d$trialNum, groupingVar = 'subID')
-bsFormula <- bSplineFormula(bs ~ 1, basisVar = d$trialNum, groupingVar = 'subID')
+d$drSpl <- bSplineMat(basisVar = d$trialNum, nbasis = 7)
+d$bsSpl <- bSplineMat(basisVar = d$trialNum)
 
-m_ddm <- fit_ddm(drFormula = drFormula 
- ,bsFormula = bsFormula
+m_ddm <- fit_ddm(drFormula = rt | dec(acc) ~ scale(trialNum) +  (drSpl + scale(absRat) || subID)
+ ,bsFormula = bs ~ (bsSpl || subID)
  ,dat = d
- , cores = 2
+ , cores = 2 , chains = 2 # only run 2 chains for efficiency
  )
 
 }

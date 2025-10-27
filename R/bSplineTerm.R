@@ -10,30 +10,12 @@
 #'
 #' @examples
 #' 
-#' c()
+#' splineTerm <- bSplineTerm(basisVar = 1:200)
 #' 
 bSplineTerm <- function(basisVar,nbasis = 5,groupingVar = '', moderators = c(),dropLargest = 1){
   require(fda)
   
-  
-  if(length(unique(basisVar))/nbasis < 4){
-    nbasis <- floor(length(unique(basisVar))/4)
-    warning(paste0('There are a large number of bases relative to unique data points. Automatically reducing the number of bases to ',nbasis,'.\n') )
-  }
-  
-  curBases <- fda::create.bspline.basis(c(min(basisVar,na.rm=T)
-                                          ,max(basisVar, na.rm=T))
-                                        ,nbasis = nbasis)
-  
-  matBases <- fda::getbasismatrix(basisVar,curBases)
-  
-    lastBasis <- ncol(matBases)-dropLargest
-
-  dfBases <- data.frame(matBases[,1:lastBasis])
-  
-  colnames(dfBases) <- paste0('bspl_',nbasis,'_',signif(basisVar[apply(dfBases,2,which.max)],2))
-  
-  
+  dfBases <- bSplineDF(basisVar, nbasis)
   
   if(length(moderators)>0){
     allCombs <- expand.grid(moderators,colnames(dfBases))
