@@ -35,7 +35,7 @@ bSplineMat <- function(basisVar, nbasis = 5,dropLargest = 1,returnDF = F){
   
   dfBases <- data.frame(matBases[,1:lastBasis])
   
-  colnames(dfBases) <- paste0('bspl_',nbasis,'_',signif(basisVar[apply(dfBases,2,which.max)],2))
+  colnames(dfBases) <- paste0('bspl_',nbasis,'_',basisVar[apply(dfBases,2,which.max)])
   
   if(returnDF){
   return(dfBases)

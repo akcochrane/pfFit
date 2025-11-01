@@ -4,7 +4,7 @@
 \alias{monoVar}
 \title{Create an ordered incremented variable}
 \usage{
-monoVar(continVar, return_numeric = T, increment_size = "auto")
+monoVar(continVar, return_numeric = F, increment_size = "auto")
 }
 \arguments{
 \item{continVar}{Numeric vector, such as trial number.}

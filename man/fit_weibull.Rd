@@ -53,7 +53,7 @@ bernoulli response distribution.
     
     d$spl <- bSplineMat(basisVar = d$trialNum)
                                    
-    m_weibull <- fit_weibull(y='acc',x='absRat'
+    m_weibull_linearFixed <- fit_weibull(y='acc',x='absRat'
                                    , thresholdForm = scaleLogisThreshold ~ scale(trialNum) + (spl || subID)
                                    , shapeForm = logShape ~ (1 | subID)
                                    , dat = d
@@ -62,7 +62,7 @@ bernoulli response distribution.
                                    
     d$trialM <- monoVar(d$trialNum)
     
-    m_weibull <- fit_weibull(y='acc',x='absRat'
+    m_weibull_monoFixed <- fit_weibull(y='acc',x='absRat'
                                    , thresholdForm = scaleLogisThreshold ~ mo(trialM) + (spl || subID)
                                    , shapeForm = logShape ~ (1 | subID)
                                    , dat = d
